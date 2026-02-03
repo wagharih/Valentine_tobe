@@ -1,0 +1,461 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Be My Valentine</title>
+<style>
+  :root{
+    --pink1:#ffd1e6;
+    --pink2:#ff9fd0;
+    --pink3:#ff5fb0;
+    --ink:#3b0a24;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    color:var(--ink);
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 15% 20%, #ffe6f2 0%, rgba(255,230,242,0) 55%),
+      radial-gradient(circle at 80% 25%, #ffd0ea 0%, rgba(255,208,234,0) 55%),
+      radial-gradient(circle at 50% 80%, #ffb3db 0%, rgba(255,179,219,0) 60%),
+      linear-gradient(135deg, var(--pink1), var(--pink2));
+  }
+
+  .bgFloat{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    filter: blur(0.2px);
+  }
+  .floatItem{
+    position:absolute;
+    font-size:18px;
+    opacity:0.18;
+    animation: drift linear infinite;
+    user-select:none;
+  }
+  @keyframes drift{
+    from{ transform: translateY(110vh) translateX(0) rotate(0deg) }
+    to{ transform: translateY(-20vh) translateX(60px) rotate(20deg) }
+  }
+
+  .wrap{
+    width:min(92vw, 560px);
+    padding:18px;
+  }
+
+  .card{
+    position:relative;
+    border-radius:28px;
+    padding:26px 22px 22px 22px;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 18px 70px rgba(0,0,0,0.18);
+    overflow:hidden;
+  }
+
+  .shine{
+    position:absolute;
+    inset:-2px;
+    pointer-events:none;
+    background:
+      radial-gradient(circle at 70% 20%, rgba(255,95,176,0.28), rgba(255,255,255,0) 55%),
+      radial-gradient(circle at 20% 80%, rgba(255,160,208,0.20), rgba(255,255,255,0) 55%);
+  }
+
+  .top{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+  }
+
+  .icon{
+    width:70px;
+    height:70px;
+    border-radius:22px;
+    display:grid;
+    place-items:center;
+    background: linear-gradient(135deg, #ff5fb0, #ffd6ea);
+    box-shadow: 0 16px 30px rgba(255,70,150,0.25);
+  }
+  .icon span{
+    font-size:30px;
+    color:white;
+    text-shadow: 0 10px 18px rgba(0,0,0,0.18);
+  }
+
+  h1{
+    margin:0;
+    font-size:24px;
+    font-weight:900;
+    line-height:1.15;
+    text-align:center;
+    letter-spacing:0.2px;
+  }
+
+  .verse{
+    margin-top:12px;
+    text-align:center;
+    font-size:13px;
+    color: rgba(59,10,36,0.78);
+  }
+  .verse strong{ font-weight:900 }
+
+  .softNote{
+    margin-top:12px;
+    text-align:center;
+    font-size:12px;
+    color: rgba(59,10,36,0.62);
+  }
+
+  .area{
+    margin-top:18px;
+    position:relative;
+    height:150px;
+  }
+
+  .btn{
+    border:0;
+    cursor:pointer;
+    font-weight:900;
+    border-radius:18px;
+    user-select:none;
+    touch-action:manipulation;
+    transition: transform 120ms ease, filter 120ms ease;
+  }
+  .btn:active{ transform: scale(0.98) }
+
+  .yes{
+    width:170px;
+    height:58px;
+    font-size:18px;
+    color:white;
+    background: linear-gradient(135deg, #ff4f9a, #ff9ad5);
+    box-shadow: 0 18px 32px rgba(255,60,140,0.30);
+    position:absolute;
+    left:22px;
+    top:56px;
+  }
+  .yes:hover{ filter: brightness(1.03) }
+
+  .no{
+    width:125px;
+    height:50px;
+    font-size:14px;
+    color:#5a1738;
+    background: rgba(255,255,255,0.95);
+    border: 2px solid rgba(255,100,170,0.45);
+    box-shadow: 0 12px 22px rgba(0,0,0,0.08);
+    position:absolute;
+    left:235px;
+    top:62px;
+  }
+
+  .tiny{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:12px;
+    text-align:center;
+    font-size:12px;
+    color: rgba(59,10,36,0.60);
+  }
+
+  .yesScreen{
+    display:none;
+    margin-top:16px;
+    padding:16px 14px;
+    border-radius:18px;
+    background: rgba(255,230,242,0.98);
+    border:1px solid rgba(255,110,180,0.35);
+    box-shadow: 0 14px 26px rgba(255,60,150,0.14);
+    text-align:center;
+  }
+
+  .yesTitle{
+    font-size:22px;
+    font-weight:1000;
+  }
+  .yesText{
+    margin-top:8px;
+    font-size:14px;
+    line-height:1.45;
+  }
+  .sig{
+    margin-top:10px;
+    font-size:12px;
+    font-weight:900;
+    opacity:0.75;
+  }
+
+  canvas{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+<div class="bgFloat" id="bgFloat"></div>
+<canvas id="confetti"></canvas>
+
+<div class="wrap">
+  <div class="card" id="card">
+    <div class="shine"></div>
+
+    <div class="top">
+      <div class="icon"><span>✝</span></div>
+      <h1 id="title"></h1>
+    </div>
+
+    <div class="verse" id="verseBox"></div>
+    <div class="softNote" id="softNote"></div>
+
+    <div class="area" id="area">
+      <button class="btn yes" id="yesBtn" type="button">Yes</button>
+      <button class="btn no" id="noBtn" type="button">No</button>
+      <div class="tiny" id="tiny">No is feeling shy today</div>
+    </div>
+
+    <div class="yesScreen" id="yesScreen">
+      <div class="yesTitle" id="yesTitle"></div>
+      <div class="yesText" id="yesText"></div>
+      <div class="sig" id="sig"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Optional worship audio -->
+<!-- Put an mp3 file in the same folder named song.mp3 -->
+<audio id="song" preload="auto">
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+(function () {
+  const girlName = "Tobe"
+  const yourName = "Wesley"
+
+  const verseRef = "1 Corinthians 13:7"
+  const verseLine = "Love bears all things, believes all things, hopes all things, endures all things."
+  const footerLine = "Pick the one God is leading you to, I mean it"
+
+  const title = document.getElementById("title")
+  const verseBox = document.getElementById("verseBox")
+  const softNote = document.getElementById("softNote")
+  const yesBtn = document.getElementById("yesBtn")
+  const noBtn = document.getElementById("noBtn")
+  const tiny = document.getElementById("tiny")
+  const area = document.getElementById("area")
+
+  const yesScreen = document.getElementById("yesScreen")
+  const yesTitle = document.getElementById("yesTitle")
+  const yesText = document.getElementById("yesText")
+  const sig = document.getElementById("sig")
+
+  const song = document.getElementById("song")
+
+  title.textContent = girlName + ", will you be my Valentine"
+  verseBox.innerHTML = "<strong>" + verseRef + "</strong><div style='margin-top:4px'>" + verseLine + "</div>"
+  softNote.textContent = footerLine
+
+  // floating background hearts and crosses
+  const bg = document.getElementById("bgFloat")
+  const glyphs = ["❤","✝","❤","❤","✝","❤"]
+  for (let i = 0; i < 28; i++) {
+    const el = document.createElement("div")
+    el.className = "floatItem"
+    el.textContent = glyphs[Math.floor(Math.random() * glyphs.length)]
+    el.style.left = (Math.random() * 100) + "vw"
+    el.style.animationDuration = (10 + Math.random() * 10) + "s"
+    el.style.animationDelay = (-Math.random() * 10) + "s"
+    el.style.fontSize = (14 + Math.random() * 22) + "px"
+    el.style.opacity = (0.10 + Math.random() * 0.16)
+    el.style.transform = "rotate(" + (Math.random() * 30 - 15) + "deg)"
+    bg.appendChild(el)
+  }
+
+  // No button runs away
+  const noPhrases = [
+    "nice try 😌",
+    "still no is shy",
+    "almost got it",
+    "Jesus says choose Yes",
+    "mmm not today"
+  ]
+
+  function moveNo() {
+    const rect = area.getBoundingClientRect()
+    const maxLeft = Math.max(0, rect.width - 140)
+    const maxTop = Math.max(0, rect.height - 70)
+
+    const nextLeft = Math.floor(Math.random() * (maxLeft + 1))
+    const nextTop = Math.floor(Math.random() * (maxTop + 1))
+
+    noBtn.style.left = nextLeft + "px"
+    noBtn.style.top = nextTop + "px"
+    tiny.textContent = noPhrases[Math.floor(Math.random() * noPhrases.length)]
+  }
+
+  noBtn.addEventListener("mouseenter", moveNo)
+  noBtn.addEventListener("touchstart", function (e) { e.preventDefault(); moveNo() }, { passive:false })
+  noBtn.addEventListener("click", moveNo)
+
+  // Confetti canvas hearts and crosses
+  const canvas = document.getElementById("confetti")
+  const ctx = canvas.getContext("2d")
+  let W = 0, H = 0
+  function resize() {
+    W = canvas.width = window.innerWidth
+    H = canvas.height = window.innerHeight
+  }
+  window.addEventListener("resize", resize)
+  resize()
+
+  const colors = ["#ff4f9a","#ff79c6","#ff9ad5","#ffd6ea","#ff5fb0"]
+  const shapes = ["heart","cross"]
+
+  function rand(min, max){ return min + Math.random() * (max - min) }
+
+  function drawHeart(x, y, s, r) {
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.rotate(r)
+    ctx.scale(s, s)
+    ctx.beginPath()
+    ctx.moveTo(0, -0.3)
+    ctx.bezierCurveTo(0.6, -0.9, 1.4, -0.1, 0, 0.9)
+    ctx.bezierCurveTo(-1.4, -0.1, -0.6, -0.9, 0, -0.3)
+    ctx.closePath()
+    ctx.fill()
+    ctx.restore()
+  }
+
+  function drawCross(x, y, s, r) {
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.rotate(r)
+    ctx.beginPath()
+    const w = s * 10
+    const h = s * 18
+    const t = s * 5
+    ctx.moveTo(-t, -h)
+    ctx.lineTo(t, -h)
+    ctx.lineTo(t, -t)
+    ctx.lineTo(w, -t)
+    ctx.lineTo(w, t)
+    ctx.lineTo(t, t)
+    ctx.lineTo(t, h)
+    ctx.lineTo(-t, h)
+    ctx.lineTo(-t, t)
+    ctx.lineTo(-w, t)
+    ctx.lineTo(-w, -t)
+    ctx.lineTo(-t, -t)
+    ctx.closePath()
+    ctx.fill()
+    ctx.restore()
+  }
+
+  let particles = []
+  let running = false
+
+  function burst() {
+    const count = 140
+    const originX = W * 0.5
+    const originY = H * 0.25
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: originX + rand(-40, 40),
+        y: originY + rand(-20, 20),
+        vx: rand(-4.2, 4.2),
+        vy: rand(-7.5, -2.0),
+        g: rand(0.10, 0.18),
+        r: rand(-2.5, 2.5),
+        rr: rand(-0.08, 0.08),
+        s: rand(0.7, 1.5),
+        a: 1,
+        da: rand(0.006, 0.012),
+        color: colors[Math.floor(Math.random() * colors.length)],
+        shape: shapes[Math.floor(Math.random() * shapes.length)]
+      })
+    }
+
+    if (!running) {
+      running = true
+      requestAnimationFrame(tick)
+    }
+  }
+
+  function tick() {
+    ctx.clearRect(0, 0, W, H)
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i]
+      p.vy += p.g
+      p.x += p.vx
+      p.y += p.vy
+      p.r += p.rr
+      p.a -= p.da
+
+      if (p.a <= 0 || p.y > H + 60) {
+        particles.splice(i, 1)
+        continue
+      }
+
+      ctx.globalAlpha = Math.max(0, p.a)
+      ctx.fillStyle = p.color
+
+      if (p.shape === "heart") drawHeart(p.x, p.y, p.s * 10, p.r)
+      else drawCross(p.x, p.y, p.s, p.r)
+    }
+
+    ctx.globalAlpha = 1
+
+    if (particles.length) requestAnimationFrame(tick)
+    else running = false
+  }
+
+  function typeIn(el, text, speed) {
+    el.textContent = ""
+    let i = 0
+    const timer = setInterval(() => {
+      el.textContent += text[i] || ""
+      i++
+      if (i >= text.length) clearInterval(timer)
+    }, speed)
+  }
+
+  yesBtn.addEventListener("click", () => {
+    burst()
+    burst()
+
+    yesScreen.style.display = "block"
+    yesTitle.textContent = "She said YES ❤"
+
+    const message =
+      "I’m really grateful for you. Jesus at the center, always. " +
+      "Thank you for choosing me, I got you for real."
+    typeIn(yesText, message, 18)
+
+    sig.textContent = "Ecclesiastes 4:12   " + yourName
+
+    // play music if song.mp3 exists, it will only work after a user click
+    try { song.volume = 0.7; song.play() } catch (e) {}
+  })
+})()
+</script>
+</body>
+</html>
+```
